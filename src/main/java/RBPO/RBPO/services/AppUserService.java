@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class AppUserService {
-    private AppUserRepository appUserRepository;
+    private final AppUserRepository appUserRepository;
 
     public List<AppUser> listAppUser(String email) {
         if (email != null) return appUserRepository.findByEmail(email);
@@ -29,4 +29,5 @@ public class AppUserService {
     public AppUser getAppUserById(long id) {
         return appUserRepository.findById(id).orElse(null);
     }
+
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class CommentService {
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
     public List<Comment> listComments(String text) {
         if (text != null) return commentRepository.findByText(text);
         return commentRepository.findAll();

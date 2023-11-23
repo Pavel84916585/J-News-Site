@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ArticleService {
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
     public List<Article> listArticles(String title) {
         if (title != null) return articleRepository.findByTitle(title);

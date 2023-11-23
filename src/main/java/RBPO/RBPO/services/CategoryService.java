@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class CategoryService {
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     public List<Category> listCategories(String name) {
         if (name != null) return categoryRepository.findByName(name);
         return categoryRepository.findAll();
