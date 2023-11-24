@@ -24,6 +24,7 @@ public class AppUserController {
     }
     @PostMapping("/appUser/login")
     public String login() {
-        return "redirect:/";
+        return "redirect:/authorize/success";
     }
+
 }

@@ -1,20 +1,23 @@
 package RBPO.RBPO.controllers;
 
 import RBPO.RBPO.entity.Article;
+import RBPO.RBPO.services.AppUserService;
 import RBPO.RBPO.services.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class ArticleController {
     private final ArticleService articleService;
     @GetMapping("/")
     public String qwe(Model model) {
+        
         return "qwe";
     }
+
     @GetMapping("/all")
     public String home(@RequestParam(name = "title", required = false) String title, Model model) {
         model.addAttribute("articles", articleService.listArticles(title));

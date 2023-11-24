@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<form th:action="@{/registration}" method="post" th:object="${AppUser}">
+  <input th:field="*{username}" type="text" name="name" id="name" placeholder="Придумайте Логин">
+  <input th:field="*{email}" type="text" name="email" id="email" placeholder="Введите почту">
+  <input th:field="*{passwordHash}" type="password" name="password" id="password" placeholder="Придумайте пароль">
+  <input type="submit" value="Зарегистрироваться">
+</form>
+
+</body>
+</html>
