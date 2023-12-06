@@ -22,9 +22,5 @@ public class AppUserController {
         appUserService.deleteAppUser(id);
         return "redirect:/";
     }
-    @PostMapping("/appUser/login")
-    public String login() {
-        return "redirect:/authorize/success";
-    }
 
 }
