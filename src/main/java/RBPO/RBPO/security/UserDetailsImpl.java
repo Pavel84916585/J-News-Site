@@ -31,10 +31,13 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     public static UserDetailsImpl build(AppUser userEntity) {
-        System.out.println(userEntity.getRole());
+        System.out.println(userEntity.getRoles());
         System.out.println(userEntity.getPasswordHash());
         System.out.println(userEntity.getUsername());
-        List<GrantedAuthority> authorityList = List.of(new SimpleGrantedAuthority(userEntity.getRole().name()));
+
+        List<GrantedAuthority> authorityList = List.of(new SimpleGrantedAuthority(userEntity.getRoles().toString()));
+
+
         return new UserDetailsImpl(
                 userEntity.getId(),
                 userEntity.getUsername(),

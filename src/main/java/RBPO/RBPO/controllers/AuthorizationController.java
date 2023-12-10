@@ -2,19 +2,16 @@ package RBPO.RBPO.controllers;
 
 import RBPO.RBPO.services.AppUserService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import RBPO.RBPO.entity.AppUser;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @AllArgsConstructor
 public class AuthorizationController {
     AppUserService userService;
-
 
     @GetMapping("/login")
     public String getLoginPage() {
@@ -25,6 +22,21 @@ public class AuthorizationController {
     public String getRegistrationPage(Model model){
         model.addAttribute("AppUser", new AppUser());
         return "RegistrationPage";
+    }
+
+    @GetMapping("/activate/{code}")
+    public String activate(Model model, @PathVariable String code) {
+        boolean isActivated = userService.activateUser(code);
+
+        //model будем использовать для вывода сообщения на веб страницу
+
+        if (isActivated) {
+            model.addAttribute("message", "Пользователь успешно активировался");
+        } else {
+            model.addAttribute("message", "Код активации не найден!");
+        }
+
+        return "redirect: /login";
     }
 
     @GetMapping("/success")

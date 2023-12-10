@@ -35,8 +35,37 @@ public class AppUser {
     @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     private List<Comment> comments;
 
-    @Column(name = "role")
-    private Roles role = Roles.USER_ROLE;
+    @ElementCollection(targetClass = Roles.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Roles> roles;
+
+    private boolean active;
+    private String activationCode;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Set<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
+    }
 
     public Long getId() {
         return id;
