@@ -34,7 +34,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests((requests) -> requests
                         //разрешили доступ на страницы activate и registration для всех пользоватлей
-                        .requestMatchers("/activate/**", "/registration", "/reset/**").permitAll()
+                        .requestMatchers("/activate/**", "/registration", "/reset/**", "/generate/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form

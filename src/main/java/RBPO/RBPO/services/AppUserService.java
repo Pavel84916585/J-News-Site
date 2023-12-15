@@ -86,10 +86,11 @@ public class AppUserService {
             appUser.setPasswordHash(encoder().encode(appUser.getPasswordHash()));
             System.out.println(appUser.getPasswordHash());
             log.info("Saving new {}", appUser);
+
             //сохраняем юзера в бд
             appUserRepository.save(appUser);
             String message = String.format(
-                    "Hello, %s! \n" +
+                    "Привет, %s! \n" +
                             "Добро пожаловать на сайт Хабр 2.0 \nПожалуйста подтвердите регистрацию: http://localhost:8080/activate/%s",
                     appUser.getUsername(),
                     appUser.getActivationCode()
