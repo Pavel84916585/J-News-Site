@@ -26,39 +26,29 @@ import java.util.regex.Pattern;
 @Slf4j
 
 public class AppUserService {
-    boolean testEmail (String email) {
-
-        String regex = "^[\\w\\-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher;
-        return pattern.matcher(email).matches();
-        //.out.println(email +" : "+ matcher.matches());
-
+    public boolean testEmail (String email) {
+        if (appUserRepository.findByEmail(email) != null)
+            return true;
+        return false;
     }
 
 
 
-    boolean TestPassword (String psw) {
+    public boolean TestPassword (String psw) {
         if(psw.length()>30)
             return false;
         int balls = 0;
-        balls += psw.length() >= 8? 10: 0;
-        System.out.println(balls);// более 8 знаков
+        balls += psw.length() >= 8? 10: 0;  // более 8 знаков
         balls += psw.chars()                // 2 буквы
                 .filter(i -> "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".contains("" + (char) i)).count() > 1? 10: 0;
-        System.out.println(balls);
         balls += psw.chars()                // 2 цифры
-                .filter(i -> "0123456789".contains("" + (char) i)).count() > 1? 10: 0;
-        System.out.println(balls);
+                .filter(i -> "0123456789".contains("" + (char) i)).count() > 1 ? 10: 0;
         balls += psw.chars()                // одна или больше больших букв
-                .anyMatch(i -> "ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains("" + (char) i))? 10: 0;
-        System.out.println(balls);
+                .filter(i -> "ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains("" + (char) i)).count() > 2 ? 15: 0;
         balls += psw.chars()                // одна или больше маленьких букв
-                .anyMatch(i -> "abcdefghijklmnopqrstuvwxyz".contains("" + (char) i))? 10: 0;
-        System.out.println(balls);
-        balls += psw.chars()                // содержатся спецсимволы (дополнить список символов по желанию)
-                .anyMatch(i -> "!@#$%^&*[]-".contains("" + (char) i))? 10: 0;
-        System.out.println(balls);
+                .filter(i -> "abcdefghijklmnopqrstuvwxyz".contains("" + (char) i)).count() > 2 ? 15: 0;
+        balls += psw.chars()                // содержатся 2 спецсимвола
+                .filter(i -> "!@#$%^&*[]-".contains("" + (char) i)).count() > 1 ? 10: 0;
         if (balls >=50)
             return true;
 
@@ -67,6 +57,11 @@ public class AppUserService {
 
 
     private final AppUserRepository appUserRepository;
+
+    public boolean sendMessageToMail(AppUser appUser, String message) {
+        mailSender.send(appUser.getEmail(), "Activation code", message);
+        return true;
+    }
 
     //хэширует пароль пользователя
     @Autowired
@@ -77,46 +72,31 @@ public class AppUserService {
 
     public boolean saveAppUser(AppUser appUser)
     {
-
-
-        System.out.println(appUser.getPasswordHash());
         if (testEmail(appUser.getEmail())  && TestPassword(appUser.getPasswordHash())) {
-
-
             //ищем юзера в базе
             AppUser userFromDb = appUserRepository.findByEmail(appUser.getEmail());
             if (userFromDb != null) {
                 return false;
             }
-
-
             appUser.setActive(false);
             appUser.setRoles(Collections.singleton(Roles.USER));
             appUser.setActivationCode(UUID.randomUUID().toString());
-
-
-
+            System.out.println(appUser.getPasswordHash());
             //берем введенный пароль и хэшируем его, перезаписывая вместо "чистого" пароля
             appUser.setPasswordHash(encoder().encode(appUser.getPasswordHash()));
+            System.out.println(appUser.getPasswordHash());
             log.info("Saving new {}", appUser);
-
             //сохраняем юзера в бд
             appUserRepository.save(appUser);
-
             String message = String.format(
                     "Hello, %s! \n" +
                             "Добро пожаловать на сайт Хабр 2.0 \nПожалуйста подтвердите регистрацию: http://localhost:8080/activate/%s",
                     appUser.getUsername(),
                     appUser.getActivationCode()
             );
-
             //отправляем письмо по почте
-            mailSender.send(appUser.getEmail(), "Activation code", message);
-
+            sendMessageToMail(appUser, message);
             return true;
-        }
-        else {
-            System.out.println("пароль недостаточно сильный или почта не почта");
         }
         return false;
     }

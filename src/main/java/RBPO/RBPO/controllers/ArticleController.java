@@ -1,5 +1,6 @@
 package RBPO.RBPO.controllers;
 
+import RBPO.RBPO.entity.AppUser;
 import RBPO.RBPO.entity.Article;
 import RBPO.RBPO.services.AppUserService;
 import RBPO.RBPO.services.ArticleService;

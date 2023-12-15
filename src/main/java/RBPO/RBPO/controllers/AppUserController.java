@@ -3,6 +3,7 @@ package RBPO.RBPO.controllers;
 import RBPO.RBPO.entity.AppUser;
 import RBPO.RBPO.services.AppUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,5 +23,4 @@ public class AppUserController {
         appUserService.deleteAppUser(id);
         return "redirect:/";
     }
-
 }
