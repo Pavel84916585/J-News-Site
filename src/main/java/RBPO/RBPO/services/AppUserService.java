@@ -28,8 +28,8 @@ import java.util.regex.Pattern;
 public class AppUserService {
     public boolean testEmail (String email) {
         if (appUserRepository.findByEmail(email) != null)
-            return true;
-        return false;
+            return false;
+        return true;
     }
 
 
