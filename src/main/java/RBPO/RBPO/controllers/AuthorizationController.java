@@ -43,20 +43,22 @@ public class AuthorizationController {
         if (userService.saveAppUser(appuser))
             return "redirect: /login";
         String errors = new String("Невозможно создать пользователя!\n");
+        String link = new String ("");
         if (!userService.testEmail(appuser.getEmail()))
             errors += "Пользователь с такой почтой уже зарегестрирован.\n" +
                      "Используйте другую почту;\n" +
-                     "Перейдите по ссылке для сброса пароля от привязанного аккаунта: " +
-                      String.format(
-                            "http://localhost:8080/reset/%s\n", appuser.getEmail());
+                     "Перейдите по ссылке для сброса пароля от привязанного аккаунта: ";
+            link += String.format(
+                    "http://localhost:8080/reset/%s", appuser.getEmail());
         if (!userService.TestPassword(appuser.getPasswordHash()))
             errors += "Введённый Вами парль недостаточно сложен.\n"+
                      "Убедитесь, что он содержит минимум:\n" +
-                     "1. 2 или более цифр;\n" +
+                     "\n1. 2 или более цифр;" +
                      "2. 3 или более Заглавных латинских символа;\n" +
                      "2. 3 или более строчных латинских символа;\n" +
                      "5. 2 или более спецсимволов;\n";
         model.addAttribute("errors", errors);
+        model.addAttribute("link", link);
         return "RegistrationPage";
     }
     @GetMapping("/reset/{email}")

@@ -11,8 +11,8 @@
   <input th:field="*{passwordHash}" type="password" name="password" id="password" placeholder="Придумайте пароль">
   <input type="submit" value="Зарегистрироваться">
 </form>
-<div th:each="error : *{errors}">
-  <h1 th:text="*{errors[__${error.index}__]}"></h1>
-</div>
+<div > [[${errors}]] <a th:href="*{link}"> [[${link}]] </a>  </div>
+
+
 </body>
 </html>
