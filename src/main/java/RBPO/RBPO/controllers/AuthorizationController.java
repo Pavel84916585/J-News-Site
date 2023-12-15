@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.SecureRandom;
 
+import static RBPO.RBPO.security.GoogleAuthenticator.createQRCode;
+import static RBPO.RBPO.security.GoogleAuthenticator.getGoogleAuthenticatorBarCode;
+import static RBPO.RBPO.security.GoogleAuthenticator.getBase64QRCode;
+
+
 @Controller
 @AllArgsConstructor
 public class AuthorizationController {
@@ -27,7 +32,7 @@ public class AuthorizationController {
         SecureRandom random = new SecureRandom();
         byte[] bytes = new byte[20];
         random.nextBytes(bytes);
-        System.out.println(bytes);
+        //System.out.println(bytes);
         Base32 base32 = new Base32();
         return base32.encodeToString(bytes);
     }
@@ -36,7 +41,7 @@ public class AuthorizationController {
     /*преобразует секретные ключи в кодировке Base32
     в шестнадцатеричные и использует TOTP для преобразования
     их в 6-значные коды на основе текущего времени.*/
-    public static String getTOTPCode(String secretKey) {
+   /* public static String getTOTPCode(String secretKey) {
         Base32 base32 = new Base32();
         byte[] bytes = base32.decode(secretKey);
         String hexKey = Hex.encodeHexString(bytes);
@@ -60,11 +65,11 @@ public class AuthorizationController {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {};
         }
-    }
+    }*/
 
     @GetMapping("/login")
     public String getLoginPage() {
-        CodeGoogle(); return "login";
+        return "login";
     }
 
     @GetMapping("/registration")
@@ -94,12 +99,22 @@ public class AuthorizationController {
 
 
     @PostMapping("/registration")
-    public String postRegistration(@ModelAttribute("AppUser") AppUser appuser, Model model){
+    public String postRegistration(@ModelAttribute("AppUser") AppUser appuser, Model model) {
 
 
+        if (userService.saveAppUser(appuser)){
+            String secretKey = generateSecretKey();
+            String email = appuser.getEmail();
+            String Name = appuser.getUsername();
+            String barCodeUrl = getGoogleAuthenticatorBarCode(secretKey, email, Name);
 
-        if (userService.saveAppUser(appuser))
-            return "redirect: /login";
+            String base64QRCode = getBase64QRCode(barCodeUrl);
+
+            //выводим qr на страницу html
+            model.addAttribute("base64QRCode", base64QRCode);
+
+            return "/login";
+    }
         String errors = new String("Невозможно создать пользователя!\n");
         String link = new String ("");
         if (!userService.testEmail(appuser.getEmail()))
@@ -117,6 +132,10 @@ public class AuthorizationController {
                      "5. 2 или более спецсимволов;\n";
         model.addAttribute("errors", errors);
         model.addAttribute("link", link);
+
+
+        //System.out.println("COOOOOOODDEEEEEEEEEE" + barCodeUrl);
+
         return "RegistrationPage";
     }
     @GetMapping("/reset/{email}")

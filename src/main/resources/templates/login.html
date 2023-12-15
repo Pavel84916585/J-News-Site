@@ -18,6 +18,13 @@
   </div>
   <input type="submit" value="Войти" />
 </form>
+
+<!-- Это для теста -->
+<body th:if="${base64QRCode != null}">
+<img th:src="@{'data:image/png;base64,' + ${base64QRCode}}" alt="QR Code">
+</body>
+
+
 <a href="/registration">Зарегистрироваться</a>
 </body>
 </html>
