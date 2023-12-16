@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OAUTH 2.0</title>
+</head>
+<body>
+<h1>
+    Отсканируйте QR код для аутентификации
+</h1>
+
+<body th:if="${base64QRCode != null}">
+<img th:src="@{'data:image/png;base64,' + ${base64QRCode}}" alt="QR Code">
+</body>
+
+<form th:action="@{/oauth}" method="post">
+    <input type="text" name="oauthCode" placeholder="Введите код аутентификации из приложения"/>
+</form>
+
+<div > [[${errors}]] </div>
+
+
+</body>
+</html>
