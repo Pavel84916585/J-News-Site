@@ -2,6 +2,7 @@ package RBPO.RBPO.controllers;
 
 import RBPO.RBPO.services.AppUserService;
 import de.taimos.totp.TOTP;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.apache.commons.codec.binary.Base32;
 import org.apache.commons.codec.binary.Hex;
@@ -41,14 +42,14 @@ public class AuthorizationController {
     /*преобразует секретные ключи в кодировке Base32
     в шестнадцатеричные и использует TOTP для преобразования
     их в 6-значные коды на основе текущего времени.*/
-   /* public static String getTOTPCode(String secretKey) {
+   public static String getTOTPCode(String secretKey) {
         Base32 base32 = new Base32();
         byte[] bytes = base32.decode(secretKey);
         String hexKey = Hex.encodeHexString(bytes);
         return TOTP.getOTP(hexKey);
     }
 
-
+/*
     //Для дебага (проверяли сходятся ли числа)
     public static void CodeGoogle(){
         System.out.println(generateSecretKey());
@@ -99,7 +100,7 @@ public class AuthorizationController {
 
 
     @PostMapping("/registration")
-    public String postRegistration(@ModelAttribute("AppUser") AppUser appuser, Model model) {
+    public String postRegistration(@ModelAttribute("AppUser") AppUser appuser, Model model, HttpSession session) {
 
 
         if (userService.saveAppUser(appuser)){
@@ -111,9 +112,12 @@ public class AuthorizationController {
             String base64QRCode = getBase64QRCode(barCodeUrl);
 
             //выводим qr на страницу html
+            System.out.println(secretKey);
+            session.setAttribute("secretKey", secretKey);
+            model.addAttribute("secretKey",secretKey);
             model.addAttribute("base64QRCode", base64QRCode);
 
-            return "/login";
+            return "/oauth";
     }
         String errors = new String("Невозможно создать пользователя!\n");
         String link = new String ("");
@@ -141,5 +145,27 @@ public class AuthorizationController {
     @GetMapping("/reset/{email}")
     public String resetPassword(Model model, @PathVariable String email) {
         return "reset";
+    }
+
+    @GetMapping("/oauth")
+    public String GetOauth(@ModelAttribute("AppUser") AppUser appuser, Model model) {
+        return "oauth";
+    }
+
+
+    @PostMapping("/oauth")
+    public String PostOauth(@RequestParam("oauthCode") String oauthCode, Model model, HttpSession session) {
+        System.out.println(oauthCode);
+        System.out.println(session);
+        String secretKey = (String) session.getAttribute("secretKey");
+
+        if(oauthCode.equals(getTOTPCode(secretKey)))
+        {
+            System.out.println("ВСЁ ГУД, КОД подходит");
+            return "redirect:/";
+        }
+
+        System.out.println("КОД НЕ ПОДХОДИТ");
+        return "/oauth";
     }
 }
