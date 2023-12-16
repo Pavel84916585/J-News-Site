@@ -40,15 +40,24 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     private Set<Roles> roles;
 
-    private boolean active;
+    private int active;
     private String activationCode;
+    private String SecretOauthCode;
 
-    public boolean isActive() {
+    public int getActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(int active) {
         this.active = active;
+    }
+
+    public String getSecretOauthCode() {
+        return SecretOauthCode;
+    }
+
+    public void setSecretOauthCode(String secretOauthCode) {
+        SecretOauthCode = secretOauthCode;
     }
 
     public Set<Roles> getRoles() {

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static RBPO.RBPO.security.GoogleAuthenticator.generateSecretKey;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -78,7 +80,9 @@ public class AppUserService {
             if (userFromDb != null) {
                 return false;
             }
-            appUser.setActive(false);
+
+            appUser.setSecretOauthCode(generateSecretKey());
+            appUser.setActive(0);
             appUser.setRoles(Collections.singleton(Roles.USER));
             appUser.setActivationCode(UUID.randomUUID().toString());
             System.out.println(appUser.getPasswordHash());
@@ -96,7 +100,8 @@ public class AppUserService {
                     appUser.getActivationCode()
             );
             //отправляем письмо по почте
-            sendMessageToMail(appUser, message);
+
+            //sendMessageToMail(appUser, message);
             return true;
         }
         return false;
@@ -112,7 +117,22 @@ public class AppUserService {
         }
 
         user.setActivationCode(null);
-        user.setActive(true);
+        user.setActive(1+user.getActive());
+
+        appUserRepository.save(user);
+
+        return true;
+    }
+
+
+    public boolean activateUserOaut(String email) {
+        AppUser user = appUserRepository.findByEmail(email);
+
+        if (user == null) {
+            return false;
+        }
+
+        user.setActive(1+user.getActive());
 
         appUserRepository.save(user);
 

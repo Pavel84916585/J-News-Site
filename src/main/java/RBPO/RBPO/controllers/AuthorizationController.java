@@ -14,59 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.SecureRandom;
 
-import static RBPO.RBPO.security.GoogleAuthenticator.createQRCode;
-import static RBPO.RBPO.security.GoogleAuthenticator.getGoogleAuthenticatorBarCode;
-import static RBPO.RBPO.security.GoogleAuthenticator.getBase64QRCode;
+import static RBPO.RBPO.security.GoogleAuthenticator.*;
 
 
 @Controller
 @AllArgsConstructor
 public class AuthorizationController {
     AppUserService userService;
-
-    //Герерация 32значного кода MFA
-    /*Для Google Authenticator требуется 20-байтовый секретный ключ,
-    закодированный в виде строки base32.
-    Нам нужно сгенерировать этот ключ, используя следующий код:*/
-
-    public static String generateSecretKey() {
-        SecureRandom random = new SecureRandom();
-        byte[] bytes = new byte[20];
-        random.nextBytes(bytes);
-        //System.out.println(bytes);
-        Base32 base32 = new Base32();
-        return base32.encodeToString(bytes);
-    }
-
-
-    /*преобразует секретные ключи в кодировке Base32
-    в шестнадцатеричные и использует TOTP для преобразования
-    их в 6-значные коды на основе текущего времени.*/
-   public static String getTOTPCode(String secretKey) {
-        Base32 base32 = new Base32();
-        byte[] bytes = base32.decode(secretKey);
-        String hexKey = Hex.encodeHexString(bytes);
-        return TOTP.getOTP(hexKey);
-    }
-
-/*
-    //Для дебага (проверяли сходятся ли числа)
-    public static void CodeGoogle(){
-        System.out.println(generateSecretKey());
-
-        String secretKey = "OY7DGUS2O35TCPAES4UX7FCU2Y2Y5O33";
-        String lastCode = null;
-        while (true) {
-            String code = getTOTPCode(secretKey);
-            if (!code.equals(lastCode)) {
-                System.out.println(code);
-            }
-            lastCode = code;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {};
-        }
-    }*/
 
     @GetMapping("/login")
     public String getLoginPage() {
@@ -104,17 +58,18 @@ public class AuthorizationController {
 
 
         if (userService.saveAppUser(appuser)){
-            String secretKey = generateSecretKey();
+
             String email = appuser.getEmail();
             String Name = appuser.getUsername();
-            String barCodeUrl = getGoogleAuthenticatorBarCode(secretKey, email, Name);
+            String barCodeUrl = getGoogleAuthenticatorBarCode(appuser.getSecretOauthCode(), email, Name);
 
             String base64QRCode = getBase64QRCode(barCodeUrl);
 
             //выводим qr на страницу html
-            System.out.println(secretKey);
-            session.setAttribute("secretKey", secretKey);
-            model.addAttribute("secretKey",secretKey);
+            System.out.println(appuser.getSecretOauthCode());
+            session.setAttribute("appuser", appuser);
+            session.setAttribute("base64QRCode", base64QRCode);
+
             model.addAttribute("base64QRCode", base64QRCode);
 
             return "/oauth";
@@ -157,15 +112,21 @@ public class AuthorizationController {
     public String PostOauth(@RequestParam("oauthCode") String oauthCode, Model model, HttpSession session) {
         System.out.println(oauthCode);
         System.out.println(session);
-        String secretKey = (String) session.getAttribute("secretKey");
 
-        if(oauthCode.equals(getTOTPCode(secretKey)))
+        AppUser appuser = (AppUser) session.getAttribute("appuser");
+
+        model.addAttribute("base64QRCode",(String) session.getAttribute("base64QRCode"));
+
+        if(oauthCode.equals(getTOTPCode(appuser.getSecretOauthCode())))
         {
             System.out.println("ВСЁ ГУД, КОД подходит");
+
+            userService.activateUserOaut(appuser.getEmail());
             return "redirect:/";
         }
 
         System.out.println("КОД НЕ ПОДХОДИТ");
-        return "/oauth";
+        model.addAttribute("errors", "КОД НЕ ПОДХОДИТ");
+        return "oauth";
     }
 }
