@@ -3,11 +3,11 @@ package RBPO.RBPO.controllers;
 import RBPO.RBPO.entity.Category;
 import RBPO.RBPO.services.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;

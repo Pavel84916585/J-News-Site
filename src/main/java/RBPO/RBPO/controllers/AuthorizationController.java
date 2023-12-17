@@ -45,7 +45,7 @@ public class AuthorizationController {
             model.addAttribute("message", "Код активации не найден!");
         }
 
-        return "redirect: /login";
+        return "redirect: /";
     }
 
 
@@ -85,10 +85,10 @@ public class AuthorizationController {
         if (!userService.TestPassword(appuser.getPasswordHash()))
             errors += "Введённый Вами парль недостаточно сложен.\n"+
                      "Убедитесь, что он содержит минимум:\n" +
-                     "\n1. 2 или более цифр;" +
+                     "1. 2 или более цифр;" +
                      "2. 3 или более Заглавных латинских символа;\n" +
                      "2. 3 или более строчных латинских символа;\n" +
-                     "5. 2 или более спецсимволов;\n";
+                     "5. 2 или более спец. teсимволов;\n";
         model.addAttribute("errors", errors);
         model.addAttribute("link", link);
 

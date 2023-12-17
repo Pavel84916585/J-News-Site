@@ -6,11 +6,13 @@
 </head>
 <body>
 <h3>Создать новый товар</h3>
- <form th:action="@{/article/create}" method="post">
-  Название: <input type="text" name="title"/><br><br>
-  Описание: <input type="text" name="text"/><br><br>
-  Категория: <input type="text" name="category"/><br><br>
-  Автор: <input type="text" name="author"/><br><br>
+ <form th:action="@{/article/create}" method="post" th:object="${Article}">
+<!--  Название: <input type="text" name="title"/><br><br>-->
+<!--  Описание: <input type="text" name="text"/><br><br>-->
+<!--  <input th:field="*{username}" type="text" name="name" id="name" placeholder="Название статьи">-->
+<!--  <input th:field="*{email}" type="email" name="email" id="email" placeholder="Текст статьи">-->
+<!--  Категория: <input type="text" name="category"/><br><br>-->
+<!--  Автор: <input type="text" name="author"/><br><br>-->
   <input type="submit" value="Опубликовать статью"/>
 </form>
 </body>

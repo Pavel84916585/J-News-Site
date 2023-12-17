@@ -37,6 +37,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/activate/**",
                                 "/registration",
                                 "/reset/**",
+                                "/all",
+                                "/",
+                                "/article/create",
                                 "/generate/**",
                                 "/oauth").permitAll()
                         .anyRequest().authenticated()

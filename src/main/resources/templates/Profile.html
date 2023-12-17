@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -17,6 +17,12 @@
 
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Выйти">
+</form>
+<form th:action="@{/article/create}" method="get">
+    <input type="submit" value="Создать статью">
+</form>
+<form th:action="@{/all}" method="get">
+    <input type="submit" value="На главную">
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>

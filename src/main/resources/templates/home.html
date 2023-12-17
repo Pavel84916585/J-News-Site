@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
@@ -9,6 +9,9 @@
 <h1>Все статьи</h1>
 <h2>Статей нет</h2>
 </body>
+<form th:action="@{/profile}" method="get">
+    <input type="submit" value="Профиль">
+</form>
     <!--        <p>${article.title}</p>-->
     <!--        <p>${article.text}</p>-->
     <!--        <p>${article.author} | <a href="/article/${article.id}">Проччитать полностью</a></p>-->

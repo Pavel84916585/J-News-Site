@@ -29,4 +29,12 @@ public class Article {
     private Category category;
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     private List<Comment> comments;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "article")
+    private List<Image> images;
+    @Column(name = "previewImageId")
+    private Long previewImageId;
+    public void addImageToProductArticle(Image image) {
+        image.setArticle(this);
+        images.add(image);
+    }
 }

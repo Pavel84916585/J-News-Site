@@ -124,7 +124,9 @@ public class AppUser {
         this.comments = comments;
     }
 
-
+    public void addArticleToUser(Article article) {
+        this.articles.add(article);
+    }
 
 
 }

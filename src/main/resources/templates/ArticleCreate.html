@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h1>qwertyui</h1>
+<form th:action="@{/article/create}" method="post">
+  <input th:field="*{title}" type="title" name="title" id="title" placeholder="Название статьи">
+  <input th:field="*{username}" type="text" name="name" id="name" placeholder="Придумайте Логин">
+<!--  <input th:field="*{text}" type="email" name="email" id="email" placeholder="Введите почту">-->
+  <input th:field="*{text}" type="text" name="text" id="text" placeholder="Текст статьи">
+  <input type="submit" value="Опубликовать">
+</form>
+<div > [[${errors}]] </div>
+
+
+</body>
+</html>

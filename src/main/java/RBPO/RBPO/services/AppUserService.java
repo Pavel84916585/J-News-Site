@@ -101,7 +101,7 @@ public class AppUserService {
             );
             //отправляем письмо по почте
 
-            //sendMessageToMail(appUser, message);
+            sendMessageToMail(appUser, message);
             return true;
         }
         return false;
@@ -142,9 +142,6 @@ public class AppUserService {
 
     public void deleteAppUser(Long id) {
         appUserRepository.deleteById(id);
-    }
-    public AppUser getAppUserById(long id) {
-        return appUserRepository.findById(id).orElse(null);
     }
 
 

@@ -18,9 +18,10 @@ public class ArticleService {
         if (title != null) return articleRepository.findByTitle(title);
         return articleRepository.findAll();
     }
-    public void saveArticle(Article article) {
+    public boolean saveArticle(Article article) {
         log.info("Saving new {}", article);
         articleRepository.save(article);
+        return true;
     }
     public void deleteArticle(Long id) {
         articleRepository.deleteById(id);
