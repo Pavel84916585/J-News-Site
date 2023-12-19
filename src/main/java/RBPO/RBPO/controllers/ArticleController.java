@@ -2,20 +2,27 @@ package RBPO.RBPO.controllers;
 
 import RBPO.RBPO.entity.AppUser;
 import RBPO.RBPO.entity.Article;
+import RBPO.RBPO.entity.Category;
 import RBPO.RBPO.entity.Image;
 import RBPO.RBPO.repositories.AppUserRepository;
+import RBPO.RBPO.services.AppUserService;
 import RBPO.RBPO.services.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class ArticleController {
+    private final AppUserRepository userRepo;
     private final ArticleService articleService;
     private final AppUserRepository appUserRepository;
     @GetMapping("article/{id}")
@@ -29,17 +36,45 @@ public class ArticleController {
     public  String getArticleCreationPage(Model model) {
         return "create";
     }
+
+    @GetMapping("/article/show")
+    public String getArticleShowPage(Model model){
+        List<Article> articles = articleService.getAllArticles();
+        model.addAttribute("articles", articles);
+        //System.out.println(articles);
+        return "ArticleShow";
+    }
+
+
+
     @PostMapping("article/create")
 //    public String createArticle(Model model,@RequestParam(name = "article", required = true)  Article article,@RequestParam(name = "appUser", required = false) AppUser appUser,@RequestParam(name = "file1", required = false) MultipartFile file1,@RequestParam(name = "file2", required = false) MultipartFile file2,@RequestParam(name = "file3", required = false) MultipartFile file3) throws IOException {
     public String createArticle() {
+        Category category = new Category();
         Article article = new Article();
-        article.setTitle("qwe");
-        article.setText("asd");
-        AppUser appUser = new AppUser();
-        appUser.setPasswordHash("123qwe");
-        appUser.setEmail("admin@admin");
-        appUser.setUsername("admin");
-        appUser.setActive(2);
+        article.setTitle("статья добавленная через html");
+        article.setText("TEEEEEXXXXXXXTTTT");
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println(currentPrincipalName);
+
+
+        List<Image> images = new ArrayList<Image>();
+        Image image1 = null;
+        images.add(image1);
+
+
+        article.setCategory(category);
+        article.setImages(images);
+
+        AppUser user = new AppUser();
+
+        user = (AppUser) this.userRepo.findByEmail(currentPrincipalName);
+
+        article.setAuthor(user);
+
+
 //        Image image1 = null;
 //        Image image2;
 //        Image image3;
@@ -56,10 +91,9 @@ public class ArticleController {
 //            image3 = toImageEntity(file3);
 //            article.addImageToProductArticle(image3);
 //        }
-        appUser = appUserRepository.findByEmail(appUser.getEmail());
-        appUser.addArticleToUser(article);
-        article.setAuthor(appUser);
-//        article.setPreviewImageId(image1.getId());
+
+
+
         articleService.saveArticle(article);
         System.out.println(article);
 

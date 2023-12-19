@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@Table(name = "article", uniqueConstraints = @UniqueConstraint(columnNames={"title"}))
+@Table(name = "article", uniqueConstraints = @UniqueConstraint(columnNames={"article_id"}))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Article {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO) //возможно изза этой строки у нас проблема с айдишниками
     @Column(name = "article_id")
     private Long id;
     @Column(name = "title")
@@ -30,11 +30,20 @@ public class Article {
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     private List<Comment> comments;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "article")
-    private List<Image> images;
+    private List<Image> images;    //поменять по base64
+
     @Column(name = "previewImageId")
     private Long previewImageId;
     public void addImageToProductArticle(Image image) {
         image.setArticle(this);
         images.add(image);
+    }
+
+
+
+
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
