@@ -7,6 +7,7 @@ import RBPO.RBPO.entity.Image;
 import RBPO.RBPO.repositories.AppUserRepository;
 import RBPO.RBPO.services.AppUserService;
 import RBPO.RBPO.services.ArticleService;
+import com.google.zxing.qrcode.decoder.Mode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +35,8 @@ public class ArticleController {
 
     @GetMapping("article/create")
     public  String getArticleCreationPage(Model model) {
+        if (!(model.containsAttribute("title") || model.containsAttribute("text")))
+            model.addAttribute("Article", new Article());
         return "create";
     }
 
@@ -52,9 +55,6 @@ public class ArticleController {
     public String createArticle() {
         Category category = new Category();
         Article article = new Article();
-        article.setTitle("статья добавленная через html");
-        article.setText("TEEEEEXXXXXXXTTTT");
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
         System.out.println(currentPrincipalName);

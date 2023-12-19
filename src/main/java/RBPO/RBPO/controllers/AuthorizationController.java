@@ -1,12 +1,8 @@
 package RBPO.RBPO.controllers;
 
 import RBPO.RBPO.services.AppUserService;
-import de.taimos.totp.TOTP;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.apache.commons.codec.binary.Base32;
-import org.apache.commons.codec.binary.Hex;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import RBPO.RBPO.entity.AppUser;
