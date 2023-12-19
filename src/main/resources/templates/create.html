@@ -9,7 +9,10 @@
  <form th:action="@{/article/create}" method="post" th:object="${Article}">
      <input th:field="*{title}" type="text" name="title" id="title" placeholder="Название статьи">
      <input th:field="*{text}" type="text" name="text" id="text" placeholder="Текст статьи">
+     <input type="text" name="categoryName" id="categoryName" placeholder="Категория статьи">
      <input type="submit" value="Опубликовать статью"/>
 </form>
+
+
 </body>
 </html>

@@ -12,9 +12,15 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
+//              не работает код? Купи рабочий 👈(ﾟヮﾟ👈)
+
 public class Article {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO) //возможно изза этой строки у нас проблема с айдишниками
+    @SequenceGenerator(name = "article_seq",
+            sequenceName = "article_sequence",
+            initialValue = 1, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "article_seq") //возможно изза этой строки у нас проблема с айдишниками
     @Column(name = "article_id")
     private Long id;
     @Column(name = "title")
@@ -34,16 +40,28 @@ public class Article {
 
     @Column(name = "previewImageId")
     private Long previewImageId;
-    public void addImageToProductArticle(Image image) {
+
+    public void addImageToArticle(Image image) {
         image.setArticle(this);
         images.add(image);
     }
 
-
-
-
-
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", category='" + category + '\'' +
+                ", comments='" + comments + '\'' +
+                ", images='" + images + '\'' +
+                ", text='" + text + '\'' +
+
+                '}';
     }
 }

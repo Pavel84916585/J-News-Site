@@ -5,9 +5,12 @@ import RBPO.RBPO.entity.Article;
 import RBPO.RBPO.entity.Category;
 import RBPO.RBPO.entity.Image;
 import RBPO.RBPO.repositories.AppUserRepository;
+import RBPO.RBPO.repositories.CategoryRepository;
 import RBPO.RBPO.services.AppUserService;
 import RBPO.RBPO.services.ArticleService;
+import RBPO.RBPO.services.CategoryService;
 import com.google.zxing.qrcode.decoder.Mode;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,9 +26,13 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class ArticleController {
-    private final AppUserRepository userRepo;
+    //private final AppUserRepository userRepo;
+    private final AppUserService userService;
+
     private final ArticleService articleService;
-    private final AppUserRepository appUserRepository;
+    //private final CategoryRepository categoryRepo;
+    private final CategoryService categoryService;
+
     @GetMapping("article/{id}")
     public String detailedArticle(@PathVariable long id, Model model) {
         model.addAttribute("article", articleService.getArticleById(id));
@@ -35,8 +42,10 @@ public class ArticleController {
 
     @GetMapping("article/create")
     public  String getArticleCreationPage(Model model) {
-        if (!(model.containsAttribute("title") || model.containsAttribute("text")))
+        if (!(model.containsAttribute("title") || model.containsAttribute("text"))) {
             model.addAttribute("Article", new Article());
+            model.addAttribute("Category", new Category());
+        }
         return "create";
     }
 
@@ -52,27 +61,47 @@ public class ArticleController {
 
     @PostMapping("article/create")
 //    public String createArticle(Model model,@RequestParam(name = "article", required = true)  Article article,@RequestParam(name = "appUser", required = false) AppUser appUser,@RequestParam(name = "file1", required = false) MultipartFile file1,@RequestParam(name = "file2", required = false) MultipartFile file2,@RequestParam(name = "file3", required = false) MultipartFile file3) throws IOException {
-    public String createArticle() {
-        Category category = new Category();
-        Article article = new Article();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        System.out.println(currentPrincipalName);
+    public String createArticle(@ModelAttribute("Article") Article article, @RequestParam("categoryName") String categoryName, Model model){
 
+
+        Category category = (Category) categoryService.getCategoryByName(categoryName);
+
+
+        //проверяем есть ли указанная категория, если ее нет - создаем
+        if(category == null){
+            category = new Category();
+            category.setName(categoryName);
+            categoryService.saveCategory(category);
+        }
 
         List<Image> images = new ArrayList<Image>();
         Image image1 = null;
         images.add(image1);
 
 
+
+
         article.setCategory(category);
         article.setImages(images);
 
-        AppUser user = new AppUser();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // берем данные пользователя создавшего статью
+        String currentPrincipalName = authentication.getName();
 
-        user = (AppUser) this.userRepo.findByEmail(currentPrincipalName);
+       // System.out.println(currentPrincipalName);
+
+        AppUser user = (AppUser) this.userService.getAppUserByEmail(currentPrincipalName);
 
         article.setAuthor(user);
+
+       // System.out.println(currentPrincipalName);
+
+
+
+
+
+
+
+
 
 
 //        Image image1 = null;
@@ -95,10 +124,15 @@ public class ArticleController {
 
 
         articleService.saveArticle(article);
-        System.out.println(article);
+
+
+        //       Никакого сегодня СТРИНГА НЕ БУДЕТ. Дальше БОГА НЕТ 👈(ﾟヮﾟ👈)
+        //System.out.println(article);
 
         return "redirect: /all";
     }
+
+
 
     private Image toImageEntity(MultipartFile file1) throws IOException {
         Image image = new Image();

@@ -28,6 +28,13 @@ import static RBPO.RBPO.security.GoogleAuthenticator.generateSecretKey;
 @Slf4j
 
 public class AppUserService {
+    private final AppUserRepository appUserRepository;
+
+    public AppUser getAppUserByEmail(String email) {
+        return appUserRepository.findByEmail(email);
+    }
+
+
     public boolean testEmail (String email) {
         if (appUserRepository.findByEmail(email) != null)
             return false;
@@ -58,7 +65,7 @@ public class AppUserService {
     }
 
 
-    private final AppUserRepository appUserRepository;
+
 
     public boolean sendMessageToMail(AppUser appUser, String message) {
         mailSender.send(appUser.getEmail(), "Activation code", message);

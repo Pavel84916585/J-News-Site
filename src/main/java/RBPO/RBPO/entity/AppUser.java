@@ -15,14 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
 public class AppUser {
     @Id
     //@GeneratedValue(strategy = GenerationType.SEQUENCE)//возможно изза этой строки у нас проблема с айдишниками
-    @SequenceGenerator(name = "pet_seq",
-            sequenceName = "pet_sequence",
+    @SequenceGenerator(name = "user_seq",
+            sequenceName = "user_sequence",
             initialValue = 1, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pet_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     @Column(name = "user_id")
     private Long id;
     @Column(name = "username")
@@ -129,5 +128,12 @@ public class AppUser {
         this.articles.add(article);
     }
 
-
+    @Override
+    public String toString() {
+        return "AppUser{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

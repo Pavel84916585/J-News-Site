@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>qwertyui</h1>
-<form th:action="@{/category/create}" method="post">
+<form th:action="@{/category/create}" method="post" th:object="${Category}">
   <input th:field="*{name}" type="text" name="name" id="name" placeholder="Придумайте название категории">
 </form>
 <div > [[${errors}]] </div>
