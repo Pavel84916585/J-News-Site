@@ -35,7 +35,7 @@ public class CommentController {
         savingComment.setAuthor(this.userService.getAppUserByEmail(currentPrincipalName));
         commentService.saveComment(savingComment);
         article.addCommentToArticle(savingComment);
-        return String.format("redirect:/article{}", article_id);
+        return "redirect:/article/" + article_id;
     }
     @PostMapping("/comment/delete/{id}")
     public String deleteComment(@PathVariable Long id) {
