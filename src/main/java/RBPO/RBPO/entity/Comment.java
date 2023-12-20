@@ -15,10 +15,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "comment_id")
     private Long id;
-    @Column(name = "text", columnDefinition = "text")
-    private String text;
-    @Column(name = "commentHash")
-    private String commentHash;
+    @Column(name = "commentText", columnDefinition = "text")
+    private String commentText;
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name="author_id")
     private AppUser author;

@@ -1,16 +1,10 @@
 package RBPO.RBPO.controllers;
 
-import RBPO.RBPO.entity.AppUser;
-import RBPO.RBPO.entity.Article;
-import RBPO.RBPO.entity.Category;
-import RBPO.RBPO.entity.Image;
-import RBPO.RBPO.repositories.AppUserRepository;
-import RBPO.RBPO.repositories.CategoryRepository;
+import RBPO.RBPO.entity.*;
 import RBPO.RBPO.services.AppUserService;
 import RBPO.RBPO.services.ArticleService;
 import RBPO.RBPO.services.CategoryService;
-import com.google.zxing.qrcode.decoder.Mode;
-import jakarta.servlet.http.HttpSession;
+import RBPO.RBPO.services.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,16 +20,20 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class ArticleController {
-    //private final AppUserRepository userRepo;
     private final AppUserService userService;
 
     private final ArticleService articleService;
-    //private final CategoryRepository categoryRepo;
     private final CategoryService categoryService;
+    private final CommentService commentService;
 
     @GetMapping("article/{id}")
     public String detailedArticle(@PathVariable long id, Model model) {
+        if (!(model.containsAttribute("Comment"))) {
+            model.addAttribute("Comment", new Comment());
+            System.out.println("123421254125121");
+        }
         model.addAttribute("article", articleService.getArticleById(id));
+        model.addAttribute("Comments", commentService.listComments(articleService.getArticleById(id)));
         return "detailedArticle";
     }
 
@@ -60,7 +58,6 @@ public class ArticleController {
 
 
     @PostMapping("article/create")
-//    public String createArticle(Model model,@RequestParam(name = "article", required = true)  Article article,@RequestParam(name = "appUser", required = false) AppUser appUser,@RequestParam(name = "file1", required = false) MultipartFile file1,@RequestParam(name = "file2", required = false) MultipartFile file2,@RequestParam(name = "file3", required = false) MultipartFile file3) throws IOException {
     public String createArticle(@ModelAttribute("Article") Article article, @RequestParam("categoryName") String categoryName, Model model){
 
 

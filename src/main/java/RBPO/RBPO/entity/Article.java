@@ -46,6 +46,11 @@ public class Article {
         images.add(image);
     }
 
+    public void addCommentToArticle(Comment comment) {
+        comment.setArticle(this);
+        comments.add(comment);
+    }
+
     public void setCategory(Category category) {
         this.category = category;
     }

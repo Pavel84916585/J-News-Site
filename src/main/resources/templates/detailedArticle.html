@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>Статья</h3>
+  <h1 th:text="${article.title}"></h1>
+  <h1 th:text="${article.text}"></h1>
+<table>
+    <thead>
+    <tr>
+        <th>Author</th>
+        <th>Content</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comment : ${Comments}">
+        <td th:text="${comment.author}"></td>
+        <td th:text="${comment.text}"></td>
+    </tr>
+    </tbody>
+</table>
+<form th:action="@{/comment/create}" method="post" th:object="${Comment}">
+  <input th:field="*{commentText}" type="text" name="commentText" id="commentText" placeholder="Оставьте комментарий">
+  <input type="submit" value="Опубликовать статью"/>
+</form>
+</body>
+</html>

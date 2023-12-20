@@ -14,9 +14,9 @@ import java.util.List;
 @Slf4j
 public class CommentService {
     private final CommentRepository commentRepository;
-    public List<Comment> listComments(String text) {
-        if (text != null) return commentRepository.findByText(text);
-        return commentRepository.findAll();
+    public List<Comment> listComments(Article article) {
+        if (article != null) return commentRepository.findByArticle(article);
+        return null;
     }
     public void saveComment(Comment comment) {
         log.info("Saving new {}", comment);
