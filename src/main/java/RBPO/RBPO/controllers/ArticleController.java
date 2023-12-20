@@ -38,6 +38,8 @@ public class ArticleController {
     }
 
 
+
+
     @GetMapping("article/create")
     public  String getArticleCreationPage(Model model) {
         if (!(model.containsAttribute("title") || model.containsAttribute("text"))) {
