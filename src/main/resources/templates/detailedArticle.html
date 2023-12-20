@@ -17,12 +17,12 @@
     </thead>
     <tbody>
     <tr th:each="comment : ${Comments}">
-        <td th:text="${comment.author}"></td>
-        <td th:text="${comment.text}"></td>
+        <td th:text="${comment.author.username}"></td>
+        <td th:text="${comment.commentText}"></td>
     </tr>
     </tbody>
 </table>
-<form th:action="@{/comment/create}" method="post" th:object="${Comment}">
+<form th:action="@{/comment/create/}+${article.id}" method="post" th:object="${Comment}">
   <input th:field="*{commentText}" type="text" name="commentText" id="commentText" placeholder="Оставьте комментарий">
   <input type="submit" value="Опубликовать статью"/>
 </form>
