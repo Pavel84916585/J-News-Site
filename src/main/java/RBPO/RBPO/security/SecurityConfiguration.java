@@ -39,7 +39,6 @@ public class SecurityConfiguration {
                                 "/reset/**",
                                 "/all",
                                 "/",
-                                "/article/create",
                                 "/generate/**",
                                 "/oauth").permitAll()
                         .anyRequest().authenticated()

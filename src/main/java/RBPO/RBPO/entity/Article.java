@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,16 +36,9 @@ public class Article {
     private Category category;
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER)
     private List<Comment> comments;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "article")
-    private List<Image> images;    //поменять по base64
 
     @Column(name = "previewImageId")
     private Long previewImageId;
-
-    public void addImageToArticle(Image image) {
-        image.setArticle(this);
-        images.add(image);
-    }
 
     public void addCommentToArticle(Comment comment) {
         comments.add(comment);
@@ -63,7 +57,6 @@ public class Article {
                 ", author='" + author + '\'' +
                 ", category='" + category + '\'' +
                 ", comments='" + comments + '\'' +
-                ", images='" + images + '\'' +
                 ", text='" + text + '\'' +
 
                 '}';

@@ -1,25 +1,17 @@
 package RBPO.RBPO.services;
 
 import RBPO.RBPO.entity.AppUser;
-import RBPO.RBPO.entity.Article;
 import RBPO.RBPO.entity.Roles;
 import RBPO.RBPO.repositories.AppUserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import RBPO.RBPO.services.MailSender;
 
-import javax.management.relation.Role;
 import java.util.Collections;
 import java.util.UUID;
 
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static RBPO.RBPO.security.GoogleAuthenticator.generateSecretKey;
 
@@ -44,6 +36,8 @@ public class AppUserService {
 
 
     public boolean TestPassword (String psw) {
+        System.out.println(psw);
+
         if(psw.length()>30)
             return false;
         int balls = 0;
@@ -67,9 +61,8 @@ public class AppUserService {
 
 
 
-    public boolean sendMessageToMail(AppUser appUser, String message) {
+    public void sendMessageToMail(AppUser appUser, String message) {
         mailSender.send(appUser.getEmail(), "Activation code", message);
-        return true;
     }
 
     //хэширует пароль пользователя
@@ -92,17 +85,17 @@ public class AppUserService {
             appUser.setActive(0);
             appUser.setRoles(Collections.singleton(Roles.USER));
             appUser.setActivationCode(UUID.randomUUID().toString());
-            System.out.println(appUser.getPasswordHash());
+            //System.out.println(appUser.getPasswordHash());
             //берем введенный пароль и хэшируем его, перезаписывая вместо "чистого" пароля
             appUser.setPasswordHash(encoder().encode(appUser.getPasswordHash()));
-            System.out.println(appUser.getPasswordHash());
+            //System.out.println(appUser.getPasswordHash());
             log.info("Saving new {}", appUser);
 
             //сохраняем юзера в бд
             appUserRepository.save(appUser);
             String message = String.format(
                     "Привет, %s! \n" +
-                            "Добро пожаловать на сайт Хабр 2.0 \nПожалуйста подтвердите регистрацию: http://localhost:8080/activate/%s",
+                            "Добро пожаловать на сайт Хабр 2.0 \nПожалуйста подтвердите регистрацию: https://localhost/activate/%s",
                     appUser.getUsername(),
                     appUser.getActivationCode()
             );

@@ -13,28 +13,6 @@ import java.util.List;
 @Slf4j
 public class ArticleService {
 
-    /*  Раскоментить низ */
-    /*
-    private final ArticleRepository articleRepository;
-
-    public List<Article> listArticles(String title) {
-        if (title != null) return articleRepository.findByTitle(title);
-        return articleRepository.findAll();
-    }
-    public boolean saveArticle(Article article) {
-        log.info("Saving new {}", article);
-        articleRepository.save(article);
-        return true;
-    }
-    public void deleteArticle(Long id) {
-        articleRepository.deleteById(id);
-    }
-    public Article getArticleById(long id) {
-        return articleRepository.findById(id).orElse(null);
-    }
-
-
-    */
 
     //Кирилл
     private final ArticleRepository articleRepository;
@@ -59,4 +37,6 @@ public class ArticleService {
     public void deleteArticle(Long id) {
         articleRepository.deleteById(id);
     }
+
+
 }

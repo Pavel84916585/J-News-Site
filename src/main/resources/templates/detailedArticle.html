@@ -6,9 +6,24 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
+<div>
 <h3>Статья</h3>
 <h1 th:text="${article.title}"></h1>
 <h1 th:text="${article.text}"></h1>
+</div>
+
+<table>
+<tbody id="imagesTable">
+<!-- Здесь будут отображаться комментарии -->
+<tr th:each="image : ${Images}">
+    <img th:src="@{'data:image/png;base64,' + ${image}}" alt="Image" height="90px">
+</tr>
+</tbody>
+</table>
+
+<!--<body th:if="${Images != null}">-->
+<!--<img th:src="@{'data:image/png;base64,' + ${Images}}" alt="Image">-->
+<!--</body>-->
 
 <form id="commentForm" th:action="@{/comment/create/}+${article.id}" method="post" th:object="${Comment}">
     <input th:field="*{commentText}" type="text" name="commentText" id="commentText" placeholder="Оставьте комментарий">

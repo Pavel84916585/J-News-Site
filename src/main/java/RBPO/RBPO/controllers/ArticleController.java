@@ -1,11 +1,10 @@
 package RBPO.RBPO.controllers;
 
 import RBPO.RBPO.entity.*;
-import RBPO.RBPO.services.AppUserService;
-import RBPO.RBPO.services.ArticleService;
-import RBPO.RBPO.services.CategoryService;
-import RBPO.RBPO.services.CommentService;
+import RBPO.RBPO.services.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -15,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 @Controller
@@ -26,14 +27,28 @@ public class ArticleController {
     private final CategoryService categoryService;
     private final CommentService commentService;
 
+    private final ImageService imageService;
+
     @GetMapping("article/{id}")
     public String detailedArticle(@PathVariable long id, Model model) {
         if (!(model.containsAttribute("Comment"))) {
             model.addAttribute("Comment", new Comment());
-            System.out.println("123421254125121");
         }
+
+        if (!(model.containsAttribute("Images"))) {
+            model.addAttribute("Images", new Image());
+        }
+
+
+
+        //System.out.println(Base64.getEncoder().encodeToString(imageData));
+
+        //System.out.println(imageService.downloadImage(articleService.getArticleById(id)));
+
+        model.addAttribute("Images", imageService.downloadImage(articleService.getArticleById(id)));
         model.addAttribute("article", articleService.getArticleById(id));
         model.addAttribute("Comments", commentService.listComments(articleService.getArticleById(id)));
+
         return "detailedArticle";
     }
 
@@ -59,89 +74,49 @@ public class ArticleController {
 
 
 
-    @PostMapping("article/create")
-    public String createArticle(@ModelAttribute("Article") Article article, @RequestParam("categoryName") String categoryName, Model model){
-
+    @PostMapping("/article/create")
+    public String createArticle(@ModelAttribute("Article") Article article, @RequestParam("categoryName") String categoryName, @RequestParam("files") MultipartFile[] files, Model model) throws IOException {
 
         Category category = (Category) categoryService.getCategoryByName(categoryName);
 
-
         //проверяем есть ли указанная категория, если ее нет - создаем
-        if(category == null){
+        if (category == null) {
             category = new Category();
             category.setName(categoryName);
             categoryService.saveCategory(category);
         }
 
-        List<Image> images = new ArrayList<Image>();
-        Image image1 = null;
-        images.add(image1);
 
-
+       // String uploadImage = ImageService.uploadImage(files);
 
 
         article.setCategory(category);
-        article.setImages(images);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // берем данные пользователя создавшего статью
         String currentPrincipalName = authentication.getName();
 
-       // System.out.println(currentPrincipalName);
+        // System.out.println(currentPrincipalName);
 
         AppUser user = (AppUser) this.userService.getAppUserByEmail(currentPrincipalName);
 
         article.setAuthor(user);
 
-       // System.out.println(currentPrincipalName);
-
-
-
-
-
-
-
-
-
-
-//        Image image1 = null;
-//        Image image2;
-//        Image image3;
-//        if (file1.getSize() != 0) {
-//            image1 = toImageEntity(file1);
-//            image1.setPreviewImage(true);
-//            article.addImageToProductArticle(image1);
-//        }
-//        if (file2.getSize() != 0) {
-//            image2 = toImageEntity(file2);
-//            article.addImageToProductArticle(image2);
-//        }
-//        if (file3.getSize() != 0) {
-//            image3 = toImageEntity(file3);
-//            article.addImageToProductArticle(image3);
-//        }
-
-
 
         articleService.saveArticle(article);
 
 
-        //       Никакого сегодня СТРИНГА НЕ БУДЕТ. Дальше БОГА НЕТ 👈(ﾟヮﾟ👈)
-        //System.out.println(article);
+        //сохранение картинки для статьи
+        String uploadImage = null;
+        for (MultipartFile file : files) {
 
-        return "redirect: /all";
+            uploadImage = imageService.uploadImage(file, article);
+        }
+
+        //       Никакого сегодня СТРИНГА НЕ БУДЕТ.  👈(ﾟヮﾟ👈)
+
+        return "redirect:/all";
     }
 
-
-
-    private Image toImageEntity(MultipartFile file1) throws IOException {
-        Image image = new Image();
-        image.setName(file1.getName());
-        image.setSize(file1.getSize());
-        image.setBytes(file1.getBytes());
-        image.setOriginalFileName(file1.getOriginalFilename());
-        image.setContentType(file1.getContentType());
-        return image;
-    }
 
     @PostMapping("/article/delete/{id}")
     public String deleteArticle(@PathVariable Long id) {

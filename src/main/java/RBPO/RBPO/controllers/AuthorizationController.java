@@ -76,8 +76,10 @@ public class AuthorizationController {
             errors += "Пользователь с такой почтой уже зарегестрирован.\n" +
                      "Используйте другую почту;\n" +
                      "Перейдите по ссылке для сброса пароля от привязанного аккаунта: ";
+
+        //сделать восстановление пароля
             link += String.format(
-                    "http://localhost:8080/reset/%s", appuser.getEmail());
+                    "https://localhost/reset/%s", appuser.getEmail());
         if (!userService.TestPassword(appuser.getPasswordHash()))
             errors += "Введённый Вами парль недостаточно сложен.\n"+
                      "Убедитесь, что он содержит минимум:\n" +
