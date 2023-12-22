@@ -1,6 +1,7 @@
 package RBPO.RBPO.services;
 
 import RBPO.RBPO.entity.Article;
+import RBPO.RBPO.entity.Category;
 import RBPO.RBPO.repositories.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,5 +39,5 @@ public class ArticleService {
         articleRepository.deleteById(id);
     }
 
-
+    public List<Article> geArticlesByCategory(Category category) {return articleRepository.findByCategory(category);}
 }

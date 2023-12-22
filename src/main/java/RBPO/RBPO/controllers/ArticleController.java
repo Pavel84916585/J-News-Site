@@ -114,7 +114,7 @@ public class ArticleController {
 
         //       Никакого сегодня СТРИНГА НЕ БУДЕТ.  👈(ﾟヮﾟ👈)
 
-        return "redirect:/all";
+        return "home";
     }
 
 
